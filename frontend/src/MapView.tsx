@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 import { AttributionControl, Circle, MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Icon } from './Icon'
+import { layoutPins } from './pinLayout'
 import type { Echo, HeatPoint } from './api'
 import { LISTEN_RADIUS_M } from './api'
 import type { LatLng } from './useLocation'
@@ -32,7 +33,6 @@ export function MapView({ echoes, heat, me, gpsFix, selected, onSelect }: Props)
       <TileLayer url={SAT_TILES} attribution={ATTRIBUTION} maxZoom={19} maxNativeZoom={18} />
       <TileLayer url={LABEL_TILES} maxZoom={19} maxNativeZoom={18} opacity={0.9} />
       <TapHandler onTap={() => onSelect(null)} />
-      <FocusOn target={selected} />
       <FollowFirstFix fix={gpsFix} />
       <HeatLayer heat={heat} />
       {selected && (
@@ -43,16 +43,33 @@ export function MapView({ echoes, heat, me, gpsFix, selected, onSelect }: Props)
           pathOptions={{ color: '#007aff', weight: 1.5, opacity: 0.6, fillColor: '#007aff', fillOpacity: 0.08 }}
         />
       )}
-      {echoes.map((e) => (
-        <EchoPin key={e.id} echo={e} selected={selected?.id === e.id} onSelect={onSelect} />
-      ))}
+      <PinLayer echoes={echoes} selected={selected} onSelect={onSelect} />
       <Marker position={me} icon={meIcon} interactive={false} zIndexOffset={1000} />
       <MapControls me={me} hidden={!!selected} />
     </MapContainer>
   )
 }
 
-function EchoPin({ echo: e, selected, onSelect }: { echo: Echo; selected: boolean; onSelect: (e: Echo) => void }) {
+/**
+ * Renders every pin at a screen-space position computed by layoutPins, so
+ * pins never overlap and spacing is uniform at any zoom. Recomputed on zoom.
+ */
+function PinLayer({ echoes, selected, onSelect }: { echoes: Echo[]; selected: Echo | null; onSelect: (e: Echo) => void }) {
+  const map = useMap()
+  const [zoom, setZoom] = useState(map.getZoom())
+  useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
+  const positions = useMemo(() => layoutPins(echoes, map, zoom), [echoes, map, zoom])
+  return (
+    <>
+      {echoes.map((e) => (
+        <EchoPin key={e.id} echo={e} at={positions.get(e.id) ?? e} selected={selected?.id === e.id} onSelect={onSelect} />
+      ))}
+      <FocusOn target={selected ? (positions.get(selected.id) ?? selected) : null} />
+    </>
+  )
+}
+
+function EchoPin({ echo: e, at, selected, onSelect }: { echo: Echo; at: LatLng; selected: boolean; onSelect: (e: Echo) => void }) {
   const icon = useMemo(() => {
     const cls = [
       'pin',
@@ -74,7 +91,7 @@ function EchoPin({ echo: e, selected, onSelect }: { echo: Echo; selected: boolea
   }, [e.legend, e.community, e.openDoor, e.flagged, selected])
   return (
     <Marker
-      position={e}
+      position={at}
       icon={icon}
       zIndexOffset={e.legend ? 500 : 0}
       eventHandlers={{
