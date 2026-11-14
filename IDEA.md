@@ -37,7 +37,7 @@ The judges score five areas: **innovation, execution, alignment, viability and p
 - **What is new:** the "help us help you" framing, Legends and ranking by relatability, open doors and community echoes that point to real groups, and guardrails that come from Yik Yak's failures.
 - **How to show it:** one slide that names two or three competitors and says in a sentence each what we do differently.
 - **Weak spot:** judges may say "this is EchoTether for campuses." Our answer is that the difference is the purpose (a path out of isolation) and the safety design, not the audio feature.
-- **The angle nobody else has:** schools block anonymous campus apps (the UNC System blocked Yik Yak, Fizz, Sidechat and Whisper on its networks in 2024). None of the voice-pin apps are built for a school to sponsor. Echoes is.
+- **An angle to consider (research idea, not agreed):** schools block anonymous campus apps (the UNC System blocked Yik Yak, Fizz, Sidechat and Whisper on its networks in 2024), and none of the voice-pin apps we found are built for a school to sponsor. We could pitch Echoes as the one a school would sponsor.
 
 ### Execution
 
@@ -72,7 +72,7 @@ How each part of the prompt maps to something in the product:
 - **Privacy.** .edu sign-in, no precise location stored beyond what playback needs, authors see counts only, and authors can retire their echoes.
 - **Scale.** The campus kit (.edu sign-in, OpenStreetMap geofences, course catalog tags) means a new campus is configuration.
 - **Risks to admit.** Moderation load, low density at launch, and novelty wearing off. Have a one-line answer for each.
-- **Business model.** Not required for the prompt. If asked, the honest answer is that it fits a university-funded student-wellbeing tool and we have not tested pricing. Schools already pay for anonymous, moderated peer support (Togetherall is at 450+ colleges), and JMU already funds TimelyCare for students. JMU keeps 91.3% of first-years (2024 cohort) against a goal of 94%, and tuition and fees average about $19,000 a year, so a license around $20K breaks even if it keeps about one student.
+- **Business model.** Not required for the prompt. If asked, the honest answer is that it fits a university-funded student-wellbeing tool and we have not tested pricing. Research that could back this up, if we choose to use it: schools already pay for anonymous, moderated peer support (Togetherall is at 450+ colleges), and JMU already funds TimelyCare for students. JMU keeps 91.3% of first-years (2024 cohort) against a goal of 94%, and tuition and fees average about $19,000 a year, so a license around $20K would break even if it kept about one student. The price is a guess, not a plan.
 
 ### Pitch
 
@@ -136,7 +136,7 @@ Why this should help, step by step:
 
 - Standing at a spot to hear a voice gets them out of their room with a reason that does not need another person.
 - Hearing others describe the same loneliness challenges the belief that everyone else already has friends. In a 2017 study of 1,099 first-years, 48% believed their peers had made more close friends than they had (Whillans et al., *Personality and Social Psychology Bulletin*). The authors' explanation is that students see others socializing but never see them eating or studying alone. Echoes makes that invisible part audible. We use this as the reason the design should help, not as a proven result for this app.
-- Belonging messages only worked at scale where students had real chances to belong (Walton et al., *Science* 2023, 22 colleges). That is why echoes point to real clubs and events. The one trial of a loneliness app for first-years (Nod, 2020) found no overall effect, so we do not promise one.
+- Related research, for context: belonging messages worked at scale only where students had real chances to belong (Walton et al., *Science* 2023, 22 colleges), which fits the open-doors idea. The one trial of a loneliness app for first-years (Nod, 2020) found no overall effect, so we do not promise one.
 - Posting anonymously is the smallest possible act of speaking up.
 - A reply with a real invitation turns anonymity into a first step toward a room with people in it.
 
@@ -163,7 +163,7 @@ The app does not make friends by itself. It lowers the effort needed at each ste
 
 Yik Yak is the cautionary tale. It showed students will be honest when anonymous, and it showed what happens with no guardrails. The original company collapsed in 2017; the brand came back in 2021, now belongs to Sidechat, and is blocked on some campus networks. We keep the honesty and add the guardrails.
 
-- A report button on every echo and a way to block abusive users (Apple's App Store rules require both for user content, plus a filter and published contact info).
+- To discuss (from research, not agreed): a report button on every echo and a way to block abusive users. Apple's App Store rules require both for user content, plus a filter and published contact info.
 - Voice only. No free-text comments.
 - Transcript screening before anything goes live.
 - No naming individuals (students or professors). Flag and block.
@@ -246,7 +246,7 @@ Follow one persona over a week.
 - Web app with a map library such as Leaflet or Mapbox
 - Browser geolocation
 - Audio recording in the browser, stored locally for the demo
-- Open-source Whisper run locally for transcripts (works offline on stage; OpenAI's hosted `whisper-1` is deprecated and removed in February 2027), with a simple keyword check for the crisis and naming rules. Google's Perspective API shuts down at the end of 2026, so do not use it.
+- Whisper or a similar model for transcripts, with a simple keyword check for the crisis and naming rules. One option is open-source Whisper run locally, which works offline on stage. Lifecycle notes: OpenAI's hosted `whisper-1` is deprecated and gets removed in February 2027, and Google's Perspective API shuts down at the end of 2026.
 
 ### Demo prep
 
@@ -260,7 +260,7 @@ Record 15 to 20 real echoes around the JMU campus before the pitch. The recordin
 
 ## Open questions
 
-- Product name. "Echoes" is a working title, and two existing voice-pin apps already use it, so we need a new name before the pitch.
+- Product name. "Echoes" is a working title, and two existing voice-pin apps already use it. Worth deciding whether to rename before the pitch.
 - Final tech stack.
 - Which JMU locations to seed first.
 - Who records the seed echoes, and who plays the demo persona.
