@@ -1,0 +1,4 @@
+bin/
+.task/
+backend/internal/web/dist/*
+!backend/internal/web/dist/.gitkeep

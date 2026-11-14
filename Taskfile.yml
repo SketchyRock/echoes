@@ -1,0 +1,110 @@
+version: '3'
+
+vars:
+  BACKEND_PORT: '{{.BACKEND_PORT | default "8080"}}'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  setup:
+    desc: Install frontend deps
+    dir: frontend
+    cmds:
+      - npm install
+
+  dev:
+    desc: Run backend and frontend together (Ctrl-C stops both)
+    deps: [dev:backend, dev:frontend]
+
+  dev:backend:
+    desc: Run the Go API on :{{.BACKEND_PORT}}
+    dir: backend
+    env:
+      PORT: '{{.BACKEND_PORT}}'
+    cmds:
+      - go run ./cmd/server
+
+  dev:frontend:
+    desc: Run the Vite dev server (proxies /api to the backend)
+    dir: frontend
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Build the single binary (frontend embedded)
+    deps: [build:backend]
+
+  build:backend:
+    desc: Build the server binary with the frontend embedded
+    deps: [build:frontend]
+    dir: backend
+    cmds:
+      - go build -o ../bin/echoes-server ./cmd/server
+    sources:
+      - '**/*.go'
+      - go.mod
+      - internal/web/dist/**/*
+    generates:
+      - ../bin/echoes-server
+
+  build:linux:
+    desc: Cross-compile a static linux/amd64 binary for the droplet
+    deps: [build:frontend]
+    dir: backend
+    env:
+      CGO_ENABLED: "0"
+      GOOS: linux
+      GOARCH: amd64
+    cmds:
+      - go build -trimpath -ldflags="-s -w" -o ../bin/echoes-linux-amd64 ./cmd/server
+
+  deploy:
+    desc: "Deploy to the droplet: task deploy HOST=docean DOMAIN=quikcad.net"
+    cmds:
+      - deploy/deploy.sh {{.HOST | default "docean"}} {{.DOMAIN | default "quikcad.net"}}
+
+  serve:
+    desc: Run the single binary locally (API + embedded frontend on :8080)
+    deps: [build:backend]
+    cmds:
+      - ./bin/echoes-server
+
+  build:frontend:
+    desc: Build the frontend into backend/internal/web/dist (embedded by Go)
+    dir: frontend
+    cmds:
+      - npm run build
+      - touch ../backend/internal/web/dist/.gitkeep
+    sources:
+      - src/**/*
+      - index.html
+      - package.json
+    generates:
+      - ../backend/internal/web/dist/**/*
+
+  test:
+    desc: Run Go tests and frontend typecheck
+    deps: [test:backend, test:frontend]
+
+  test:backend:
+    dir: backend
+    cmds:
+      - go vet ./...
+      - go test ./...
+
+  test:frontend:
+    dir: frontend
+    cmds:
+      - npx tsc -b
+
+  fmt:
+    desc: gofmt the backend
+    dir: backend
+    cmds:
+      - gofmt -l -w .
+
+  clean:
+    cmds:
+      - rm -rf bin frontend/dist backend/internal/web/dist/assets backend/internal/web/dist/index.html
