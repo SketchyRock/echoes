@@ -12,6 +12,84 @@ Working document for the JMU makeathon. Everything we agreed on lives here. The 
 - Asking for help mentally and academically
 - Meeting new people and connecting in a digital world
 
+## Central idea: help us help you
+
+We are not selling Echoes as an app that builds community on its own. Nobody can break someone else's comfort zone for them, and the student has to bring some initiative. The app's job is to make each first step smaller and to point somewhere real. The step itself belongs to the student.
+
+This is for students like freshmen and more introverted or socially anxious students who find the first step hard. The goal is to get them out of their room and doing things on their own, inside an anonymous community, at their own pace. Community can follow if they want it.
+
+What this means for the design:
+
+- Everything is opt-in. Open doors are invitations the student can ignore. The app never arranges anything for them.
+- No pressure mechanics. No guilt notifications and no streak penalties. Streaks and achievements are optional encouragement only.
+- Success is measured by steps the student took (places visited, echoes heard, echoes posted, open doors followed), not by connections the app formed.
+- In the pitch, say "introverted" or "students who find the first step hard," not "antisocial."
+
+Pitch version: "We can't break your comfort zone for you. You have to take the step. Echoes makes the step smaller and shows you where to take it. You help us help you."
+
+## Judging criteria
+
+The judges score five areas: **innovation, execution, alignment, viability and pitch**. We do not know the weights or the exact rubric, so treat everything below as our plan for each area and ask the organizers if the rubric is available.
+
+### Innovation
+
+- **Be honest about it.** The geo-locked anonymous audio mechanic already exists (see Honest positioning). Claiming it is new would cost us credibility.
+- **What is new:** the "help us help you" framing, Legends and ranking by relatability, open doors and community echoes that point to real groups, and guardrails that come from Yik Yak's failures.
+- **How to show it:** one slide that names two or three competitors and says in a sentence each what we do differently.
+- **Weak spot:** judges may say "this is EchoTether for campuses." Our answer is that the difference is the purpose (a path out of isolation) and the safety design, not the audio feature.
+
+### Execution
+
+- **A working demo beats slides.** One polished flow, from opening the map to hearing an echo at a spot to tapping "me too" to posting, is worth more than many half-built features.
+- **Real content.** Record 15 to 20 real echoes around JMU. Play one aloud on stage.
+- **Reliability.** The demo runs locally, so it cannot fail on venue Wi-Fi. Keep a recorded screen capture of the full flow as a backup. Test geolocation indoors, since GPS is unreliable inside buildings. Add a "demo mode" that simulates standing at a spot.
+- **Be clear about what is real and what is mocked** (open doors, achievements, multi-campus onboarding). Say it out loud, so nothing looks faked.
+- **Polish matters.** A consistent visual style and no dead buttons on the demo path.
+
+### Alignment
+
+How each part of the prompt maps to something in the product:
+
+| Prompt bullet | Where it shows up |
+|---|---|
+| Helping first years adjust | Echoes from other students about the same struggles, open doors to clubs, the Maya story |
+| Connecting outside your major | Echoes are tagged by place and subject, and the heat map spans every building |
+| Connecting with the area, not just the college | Pins around Harrisonburg, community echoes from local places |
+| Asking for help mentally and academically | Anonymous posting, warm replies, resource cards for crisis-adjacent content |
+| Meeting people and connecting in a digital world | A digital layer that only works if you leave your room |
+| Break out of your comfort zone | Go, hear, say, receive, with the student choosing every step |
+
+- Lead with "help us help you." It shows we understand the prompt: the comfort zone has to be broken by the person, and the product supports that.
+- Do not overclaim. We say the app lowers the effort of the first step and does not make friends by itself.
+
+### Viability
+
+- **Cost.** Short audio clips, a map, and transcripts. Storage and transcription costs are small per campus.
+- **Moderation.** Voice only, transcript screening, no naming individuals, supportive replies only, crisis resource cards. State the plan and name Yik Yak as the case it comes from.
+- **Cold start.** One campus at a time, seeded content, building as the unit. Possible launch paths: orientation week, RAs, student orgs, and a partnership with Student Life.
+- **Campus partnership.** The mental health angle suggests a path to working with the counseling center and the university. We should not claim a partnership that does not exist.
+- **Privacy.** .edu sign-in, no precise location stored beyond what playback needs, authors see counts only, and authors can retire their echoes.
+- **Scale.** The campus kit (.edu sign-in, OpenStreetMap geofences, course catalog tags) means a new campus is configuration.
+- **Risks to admit.** Moderation load, low density at launch, and novelty wearing off. Have a one-line answer for each.
+- **Business model.** Not required for the prompt. If asked, the honest answer is that it fits a university-funded student-wellbeing tool and we have not tested pricing.
+
+### Pitch
+
+- **Keep it short.** The deck is slim. A suggested order: problem, the idea in one line, the four steps (go, hear, say, receive), the Maya story, guardrails and honest positioning, the close.
+- **Play an echo live** early. It is the most memorable moment we have.
+- **Tell one story** (Maya from Oregon) and not a list of features.
+- **Open with a first-year's moment** and not with statistics.
+- **Close on "help us help you."**
+- **Split speaking roles** so every teammate speaks. Rehearse the timing at least twice.
+- **Prepare for questions:**
+  - What stops people from posting hateful content?
+  - How is this different from Yik Yak, EchoTether or Lore?
+  - What happens when the map is empty?
+  - What if someone posts about self-harm?
+  - Who pays for it and who runs it?
+  - How do you know it actually helps?
+  - Does it work for students who never use apps like this?
+
 ## One-line pitch
 
 Echoes is a haunted campus made of anonymous voice notes. Each note is pinned to a real place, and you can only hear it by standing there.
