@@ -23,12 +23,26 @@ Needs Go 1.22+, Node 20+, and [Task](https://taskfile.dev) (`brew install go-tas
 task setup   # npm install
 task dev     # backend :8080 + frontend :5173
 task test    # go vet + go test + tsc
-task build   # bin/echoes-server + frontend/dist
+task build   # bin/echoes-server with the frontend embedded
 ```
 
 Or by hand: `cd backend && go run ./cmd/server` and `cd frontend && npm run dev` (Vite proxies `/api` to :8080).
 
 Open http://localhost:5173. For a real phone on the same Wi-Fi use the network URL Vite prints, and switch the location chip to GPS.
+
+### Single binary
+
+`task build` runs Vite into `backend/internal/web/dist`, which `backend/internal/web` embeds, so `bin/echoes-server` serves both the API (`/api/...`) and the app. `task serve` runs it on :8080.
+
+### Deploy (Docker Compose + nginx + Let's Encrypt)
+
+Live at https://quikcad.net.
+
+```sh
+task deploy                      # = deploy/deploy.sh docean quikcad.net
+```
+
+`deploy/deploy.sh` builds the frontend and cross-compiles a static linux/amd64 binary locally (the droplet is too small to build the frontend), copies it with `docker-compose.yml`, `deploy/Dockerfile.runtime` and the nginx template to `/opt/echoes`, then runs `deploy/remote.sh` on the host: builds a distroless runtime image, starts `app` + `nginx`, bootstraps a self-signed cert if needed so nginx can answer the ACME challenge, obtains the real cert for the domain (and `www.` when it resolves there), reloads nginx and starts the certbot renewer. Only the `echoes` compose project is touched. Re-running is idempotent.
 
 ### Backend layout
 
@@ -39,6 +53,7 @@ backend/
   internal/screen/     transcript guardrails
   internal/seed/       far-away example echoes (show the locked state)
   internal/httpapi/    HTTP handlers and routing
+  internal/web/        embedded frontend build (dist/ is gitignored)
 ```
 
 ### Demo flow

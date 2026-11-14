@@ -1,0 +1,6 @@
+# Runtime-only image: the binary (with the frontend embedded) is built on the
+# developer machine by deploy/deploy.sh, so the droplet never compiles anything.
+FROM gcr.io/distroless/static-debian12:nonroot
+COPY echoes /echoes
+EXPOSE 8080
+ENTRYPOINT ["/echoes"]

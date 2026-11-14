@@ -1,0 +1,42 @@
+# Production stack: the app (API + embedded frontend) behind nginx with
+# Let's Encrypt. Set DOMAIN in .env next to this file. See deploy/deploy.sh.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.runtime
+    image: echoes:latest
+    restart: unless-stopped
+    expose:
+      - "8080"
+    mem_limit: 96m
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      NGINX_ENVSUBST_FILTER: DOMAIN
+    volumes:
+      - ./deploy/nginx/templates:/etc/nginx/templates:ro
+      - certbot-www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    depends_on:
+      - app
+    mem_limit: 48m
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - certbot-www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    entrypoint: sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done'
+    mem_limit: 64m
+
+volumes:
+  certbot-www:
+  letsencrypt:

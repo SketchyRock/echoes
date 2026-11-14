@@ -33,29 +33,56 @@ tasks:
       - npm run dev
 
   build:
-    desc: Build backend binary and frontend bundle
-    deps: [build:backend, build:frontend]
+    desc: Build the single binary (frontend embedded)
+    deps: [build:backend]
 
   build:backend:
+    desc: Build the server binary with the frontend embedded
+    deps: [build:frontend]
     dir: backend
     cmds:
       - go build -o ../bin/echoes-server ./cmd/server
     sources:
       - '**/*.go'
       - go.mod
+      - internal/web/dist/**/*
     generates:
       - ../bin/echoes-server
 
+  build:linux:
+    desc: Cross-compile a static linux/amd64 binary for the droplet
+    deps: [build:frontend]
+    dir: backend
+    env:
+      CGO_ENABLED: "0"
+      GOOS: linux
+      GOARCH: amd64
+    cmds:
+      - go build -trimpath -ldflags="-s -w" -o ../bin/echoes-linux-amd64 ./cmd/server
+
+  deploy:
+    desc: "Deploy to the droplet: task deploy HOST=docean DOMAIN=quikcad.net"
+    cmds:
+      - deploy/deploy.sh {{.HOST | default "docean"}} {{.DOMAIN | default "quikcad.net"}}
+
+  serve:
+    desc: Run the single binary locally (API + embedded frontend on :8080)
+    deps: [build:backend]
+    cmds:
+      - ./bin/echoes-server
+
   build:frontend:
+    desc: Build the frontend into backend/internal/web/dist (embedded by Go)
     dir: frontend
     cmds:
       - npm run build
+      - touch ../backend/internal/web/dist/.gitkeep
     sources:
       - src/**/*
       - index.html
       - package.json
     generates:
-      - dist/**/*
+      - ../backend/internal/web/dist/**/*
 
   test:
     desc: Run Go tests and frontend typecheck
@@ -80,4 +107,4 @@ tasks:
 
   clean:
     cmds:
-      - rm -rf bin frontend/dist
+      - rm -rf bin frontend/dist backend/internal/web/dist/assets backend/internal/web/dist/index.html
