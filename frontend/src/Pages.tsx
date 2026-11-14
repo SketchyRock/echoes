@@ -8,14 +8,14 @@ export function LegendsPage({ echoes, heat, onPick }: { echoes: Echo[]; heat: He
     <div className="page">
       <h1>Legends</h1>
       {legends.length === 0 && (
-        <div className="empty">No Legends yet. An echo becomes one after 25 "me too" taps.</div>
+        <div className="empty">No Legends yet. An echo becomes one after 25 likes.</div>
       )}
       {legends.map((e, i) => (
         <button className="card" key={e.id} onClick={() => onPick(e)}>
           <span className="rank">#{i + 1}</span>
           <h3>{e.title}</h3>
           <div className="meta">
-            {e.place} · {e.meToo} me too
+            {e.place} · {e.likes} likes
           </div>
           <div className="snippet">“{e.transcript.slice(0, 90)}…”</div>
         </button>
@@ -67,13 +67,13 @@ export function MePage({
   echoes,
   heard,
   mine,
-  meTooed,
+  liked,
   onPick,
 }: {
   echoes: Echo[]
   heard: string[]
   mine: string[]
-  meTooed: string[]
+  liked: string[]
   onPick: (e: Echo) => void
 }) {
   const myEchoes = echoes.filter((e) => mine.includes(e.id))
@@ -86,8 +86,8 @@ export function MePage({
           <div className="meta">heard</div>
         </div>
         <div className="card">
-          <div className="num">{meTooed.length}</div>
-          <div className="meta">me too</div>
+          <div className="num">{liked.length}</div>
+          <div className="meta">likes</div>
         </div>
         <div className="card">
           <div className="num">{mine.length}</div>
@@ -100,7 +100,7 @@ export function MePage({
         <button className="card" key={e.id} onClick={() => onPick(e)}>
           <h3>{e.place}</h3>
           <div className="meta">
-            {e.listens} listens · {e.meToo} me too · {e.replyCount} replies
+            {e.listens} listens · {e.likes} likes · {e.replyCount} replies
           </div>
         </button>
       ))}

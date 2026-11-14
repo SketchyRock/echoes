@@ -14,7 +14,7 @@ const (
 	// maxAudioBytes caps one uploaded recording.
 	maxAudioBytes = 10 << 20
 	// maxEchoesPerClient caps how many pins a list call returns. The list is
-	// Legends first, then by "me too", so the cap drops the least relevant.
+	// Legends first, then by likes, so the cap drops the least relevant.
 	maxEchoesPerClient = 40
 )
 
@@ -36,8 +36,8 @@ func New(store *echo.Store) http.Handler {
 	mux.HandleFunc("DELETE /api/echoes/{id}", s.retireEcho)
 	mux.HandleFunc("GET /api/echoes/{id}/audio", s.echoAudio)
 	mux.HandleFunc("POST /api/echoes/{id}/listen", s.listenEcho)
-	mux.HandleFunc("POST /api/echoes/{id}/metoo", s.meTooEcho)
-	mux.HandleFunc("DELETE /api/echoes/{id}/metoo", s.unMeTooEcho)
+	mux.HandleFunc("POST /api/echoes/{id}/like", s.likeEcho)
+	mux.HandleFunc("DELETE /api/echoes/{id}/like", s.unlikeEcho)
 	mux.HandleFunc("POST /api/echoes/{id}/replies", s.createReply)
 	mux.HandleFunc("GET /api/echoes/{id}/replies/{rid}/audio", s.replyAudio)
 	mux.HandleFunc("GET /api/heat", s.heat)

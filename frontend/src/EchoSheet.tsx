@@ -8,16 +8,16 @@ import { Player } from './Player'
 type Props = {
   echo: Echo
   me: LatLng
-  meTooed: boolean
+  liked: boolean
   mine: boolean
   authorKey?: string
   onClose: () => void
   onChanged: (e: Echo | null) => void
   onListened: (e: Echo) => void
-  onMeToo: (on: boolean) => void
+  onLike: (on: boolean) => void
 }
 
-export function EchoSheet({ echo, me, meTooed, mine, authorKey, onClose, onChanged, onListened, onMeToo }: Props) {
+export function EchoSheet({ echo, me, liked, mine, authorKey, onClose, onChanged, onListened, onLike }: Props) {
   const dist = distanceM(me.lat, me.lng, echo.lat, echo.lng)
   // Your own echoes play from anywhere; everyone else's are locked to the spot.
   const inRange = dist <= LISTEN_RADIUS_M || !!authorKey
@@ -47,11 +47,11 @@ export function EchoSheet({ echo, me, meTooed, mine, authorKey, onClose, onChang
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [echo.id, inRange])
 
-  async function toggleMeToo() {
+  async function toggleLike() {
     setErr(null)
     try {
-      const updated = meTooed ? await api.unMeToo(echo.id) : await api.meToo(echo.id)
-      onMeToo(!meTooed)
+      const updated = liked ? await api.unlike(echo.id) : await api.like(echo.id)
+      onLike(!liked)
       onChanged(updated)
     } catch (e) {
       setErr(errorMessage(e, 'Could not save'))
@@ -110,8 +110,8 @@ export function EchoSheet({ echo, me, meTooed, mine, authorKey, onClose, onChang
       {echo.transcript && <p className={`transcript ${unlocked ? '' : 'hidden'}`}>{echo.transcript}</p>}
 
       <div className="row">
-        <button className={`btn small ${meTooed ? 'on' : ''}`} onClick={toggleMeToo} disabled={!unlocked && !meTooed}>
-          <Icon name="front_hand" size={18} fill={meTooed} /> Me too · {echo.meToo}
+        <button className={`btn small ${liked ? 'on' : ''}`} onClick={toggleLike} disabled={!unlocked && !liked}>
+          <Icon name="favorite" size={18} fill={liked} /> Like · {echo.likes}
         </button>
         <span className="spacer" />
         <span className="stat">{echo.listens} listens</span>

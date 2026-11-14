@@ -61,23 +61,23 @@ backend/
 - Your position comes from GPS when the browser allows it; otherwise it is locked to **Hartman Hall** (where the demo runs). There is no manual way to move.
 - Hit **Echo** to record one where you stand. Echoes you recorded play from anywhere (the create response hands the client an `authorKey`).
 - The example pins are all several hundred meters away, so tapping them shows the locked state. Other people's echoes only play within 75 m.
-- Listen, tap **me too**, leave a warm reply (voice, optional open door).
+- Listen, tap **likes**, leave a warm reply (voice, optional open door).
 - The **Echo** tab records a new echo at your position. Transcript comes from browser speech recognition (Chrome/Safari) or you type it. It is screened live: naming a person blocks, crisis words add a support card and keep it out of Legends.
-- 25 "me too" taps turn an echo into a Legend with an auto-generated title.
+- 25 likes turn an echo into a Legend with an auto-generated title.
 - **Legends** tab: leaderboard, rising echoes, heat by place. **Me** tab: passport of places heard, your own echo stats (counts only, never who).
 
 ### API
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/api/echoes[?lat&lng][&limit=n]` | up to 40 echoes. With a position: all Legends, then nearest first. Without: Legends, then by me too |
+| GET | `/api/echoes[?lat&lng][&limit=n]` | up to 40 echoes. With a position: all Legends, then nearest first. Without: Legends, then by likes |
 | POST | `/api/echoes` | multipart: `audio`, `lat`, `lng`, `transcript`, `place`, `tone`, `duration`, `doorName/When/Where`. A pin within 8 m of an existing one is scattered 10–30 m so pins don't stack |
 | GET | `/api/echoes/{id}` | |
 | DELETE | `/api/echoes/{id}` | author retires echo |
 | GET | `/api/echoes/{id}/audio` | raw bytes |
 | POST | `/api/echoes/{id}/listen?lat&lng[&key]` | 403 if farther than 75 m, unless `key` is the echo's `authorKey` |
-| POST | `/api/echoes/{id}/metoo` | mints Legend at 25 |
-| DELETE | `/api/echoes/{id}/metoo` | take a me too back |
+| POST | `/api/echoes/{id}/like` | mints Legend at 25 |
+| DELETE | `/api/echoes/{id}/like` | take a like back |
 | POST | `/api/echoes/{id}/replies` | multipart like create |
 | GET | `/api/echoes/{id}/replies/{rid}/audio` | |
 | GET | `/api/heat` | activity per place |

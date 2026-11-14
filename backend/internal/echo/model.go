@@ -41,7 +41,7 @@ type Echo struct {
 	Mime       string    `json:"mime"`
 	Duration   float64   `json:"duration"`
 	Listens    int       `json:"listens"`
-	MeToo      int       `json:"meToo"`
+	Likes      int       `json:"likes"`
 	Legend     bool      `json:"legend"`
 	Title      string    `json:"title,omitempty"`
 	Tone       Tone      `json:"tone"`
@@ -72,6 +72,6 @@ type HeatPoint struct {
 const (
 	// ListenRadiusM is how close you must stand to hear an echo.
 	ListenRadiusM = 75.0
-	// LegendThreshold is the "me too" count that turns an echo into a Legend.
+	// LegendThreshold is the likes count that turns an echo into a Legend.
 	LegendThreshold = 25
 )

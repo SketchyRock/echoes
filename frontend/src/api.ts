@@ -17,7 +17,7 @@ export type Echo = {
   mime: string
   duration: number
   listens: number
-  meToo: number
+  likes: number
   legend: boolean
   title?: string
   tone: 'funny' | 'honest' | 'community'
@@ -60,8 +60,8 @@ export const api = {
     fetch(`/api/echoes/${id}/listen?lat=${lat}&lng=${lng}${key ? `&key=${key}` : ''}`, { method: 'POST' }).then((r) =>
       json<{ echo: Echo; audioUrl: string; distance: number }>(r),
     ),
-  meToo: (id: string) => fetch(`/api/echoes/${id}/metoo`, { method: 'POST' }).then((r) => json<Echo>(r)),
-  unMeToo: (id: string) => fetch(`/api/echoes/${id}/metoo`, { method: 'DELETE' }).then((r) => json<Echo>(r)),
+  like: (id: string) => fetch(`/api/echoes/${id}/like`, { method: 'POST' }).then((r) => json<Echo>(r)),
+  unlike: (id: string) => fetch(`/api/echoes/${id}/like`, { method: 'DELETE' }).then((r) => json<Echo>(r)),
   retire: (id: string) => fetch(`/api/echoes/${id}`, { method: 'DELETE' }),
   screen: (transcript: string) =>
     fetch('/api/screen', {

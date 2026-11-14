@@ -104,7 +104,7 @@ func (s *Store) ReplyAudio(id, replyID string) ([]byte, string, bool) {
 	return nil, "", false
 }
 
-// List returns every echo, Legends first, then by "me too".
+// List returns every echo, Legends first, then by likes.
 func (s *Store) List() []Echo {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -116,8 +116,8 @@ func (s *Store) List() []Echo {
 		if out[i].Legend != out[j].Legend {
 			return out[i].Legend
 		}
-		if out[i].MeToo != out[j].MeToo {
-			return out[i].MeToo > out[j].MeToo
+		if out[i].Likes != out[j].Likes {
+			return out[i].Likes > out[j].Likes
 		}
 		return out[i].CreatedAt.After(out[j].CreatedAt)
 	})
@@ -159,33 +159,33 @@ func (s *Store) Listen(id string) (Echo, bool) {
 	return snapshot(e), true
 }
 
-// MeToo adds a relatability tap and promotes the echo to a Legend at the
+// Likes adds a like and promotes the echo to a Legend at the
 // threshold. Flagged (crisis-adjacent) echoes never become Legends.
-func (s *Store) MeToo(id string) (Echo, bool) {
+func (s *Store) Like(id string) (Echo, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	e, ok := s.echoes[id]
 	if !ok {
 		return Echo{}, false
 	}
-	e.MeToo++
-	if !e.Flagged && !e.Legend && e.MeToo >= LegendThreshold {
+	e.Likes++
+	if !e.Flagged && !e.Legend && e.Likes >= LegendThreshold {
 		e.Legend = true
 		e.Title = LegendTitle(e.Place, e.Tone)
 	}
 	return snapshot(e), true
 }
 
-// UnMeToo takes a relatability tap back. Legend status, once earned, stays.
-func (s *Store) UnMeToo(id string) (Echo, bool) {
+// Unlike takes a like back. Legend status, once earned, stays.
+func (s *Store) Unlike(id string) (Echo, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	e, ok := s.echoes[id]
 	if !ok {
 		return Echo{}, false
 	}
-	if e.MeToo > 0 {
-		e.MeToo--
+	if e.Likes > 0 {
+		e.Likes--
 	}
 	return snapshot(e), true
 }
@@ -223,7 +223,7 @@ func (s *Store) Heat() []HeatPoint {
 			p = &HeatPoint{Lat: e.Lat, Lng: e.Lng, Place: e.Place}
 			byPlace[e.Place] = p
 		}
-		p.Weight += e.Listens + 3*e.MeToo + 1
+		p.Weight += e.Listens + 3*e.Likes + 1
 		p.Count++
 	}
 	out := make([]HeatPoint, 0, len(byPlace))

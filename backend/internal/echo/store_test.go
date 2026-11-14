@@ -5,17 +5,17 @@ import (
 	"testing"
 )
 
-func TestMeTooMintsLegend(t *testing.T) {
+func TestLikeMintsLegend(t *testing.T) {
 	s := NewStore()
 	e := s.Add(Echo{Place: "D-Hall", Tone: ToneHonest})
 	for range LegendThreshold - 1 {
-		s.MeToo(e.ID)
+		s.Like(e.ID)
 	}
 	got, _ := s.Get(e.ID)
 	if got.Legend {
 		t.Fatal("became legend before threshold")
 	}
-	got, _ = s.MeToo(e.ID)
+	got, _ = s.Like(e.ID)
 	if !got.Legend || got.Title != "The D-Hall Confession" {
 		t.Fatalf("want legend with title, got legend=%v title=%q", got.Legend, got.Title)
 	}
@@ -25,7 +25,7 @@ func TestFlaggedNeverLegend(t *testing.T) {
 	s := NewStore()
 	e := s.Add(Echo{Place: "Quad", Flagged: true})
 	for range LegendThreshold + 5 {
-		s.MeToo(e.ID)
+		s.Like(e.ID)
 	}
 	got, _ := s.Get(e.ID)
 	if got.Legend {
@@ -55,9 +55,9 @@ func TestSnapshotIsolation(t *testing.T) {
 
 func TestListOrder(t *testing.T) {
 	s := NewStore()
-	s.Add(Echo{Place: "a", MeToo: 5})
-	s.Add(Echo{Place: "b", MeToo: 50, Legend: true})
-	s.Add(Echo{Place: "c", MeToo: 10})
+	s.Add(Echo{Place: "a", Likes: 5})
+	s.Add(Echo{Place: "b", Likes: 50, Legend: true})
+	s.Add(Echo{Place: "c", Likes: 10})
 	l := s.List()
 	if l[0].Place != "b" || l[1].Place != "c" || l[2].Place != "a" {
 		t.Fatalf("bad order: %s %s %s", l[0].Place, l[1].Place, l[2].Place)
@@ -94,16 +94,16 @@ func TestAuthorKeyOnlyOnAdd(t *testing.T) {
 	}
 }
 
-func TestUnMeToo(t *testing.T) {
+func TestUnlike(t *testing.T) {
 	s := NewStore()
 	e := s.Add(Echo{Place: "Quad"})
-	s.MeToo(e.ID)
-	got, _ := s.UnMeToo(e.ID)
-	if got.MeToo != 0 {
-		t.Fatalf("want 0, got %d", got.MeToo)
+	s.Like(e.ID)
+	got, _ := s.Unlike(e.ID)
+	if got.Likes != 0 {
+		t.Fatalf("want 0, got %d", got.Likes)
 	}
-	got, _ = s.UnMeToo(e.ID)
-	if got.MeToo != 0 {
+	got, _ = s.Unlike(e.ID)
+	if got.Likes != 0 {
 		t.Fatal("must not go negative")
 	}
 }

@@ -138,8 +138,8 @@ func (s *Server) listenEcho(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (s *Server) meTooEcho(w http.ResponseWriter, r *http.Request) {
-	e, ok := s.store.MeToo(r.PathValue("id"))
+func (s *Server) likeEcho(w http.ResponseWriter, r *http.Request) {
+	e, ok := s.store.Like(r.PathValue("id"))
 	if !ok {
 		writeErr(w, http.StatusNotFound, "no such echo")
 		return
@@ -147,8 +147,8 @@ func (s *Server) meTooEcho(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, e)
 }
 
-func (s *Server) unMeTooEcho(w http.ResponseWriter, r *http.Request) {
-	e, ok := s.store.UnMeToo(r.PathValue("id"))
+func (s *Server) unlikeEcho(w http.ResponseWriter, r *http.Request) {
+	e, ok := s.store.Unlike(r.PathValue("id"))
 	if !ok {
 		writeErr(w, http.StatusNotFound, "no such echo")
 		return

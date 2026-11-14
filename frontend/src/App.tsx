@@ -63,7 +63,7 @@ export default function App() {
   const [offline, setOffline] = useState(false)
   const [heard, addHeard] = useLocalList('echoes.heard')
   const [mine, addMine] = useLocalList('echoes.mine')
-  const [meTooed, addMeTooed, removeMeTooed] = useLocalList('echoes.metoo')
+  const [liked, addLiked, removeLiked] = useLocalList('echoes.likes')
   const [authorKeys, addAuthorKey] = useAuthorKeys()
 
   const pos = loc.position
@@ -146,12 +146,12 @@ export default function App() {
                 <EchoSheet
                   echo={selected}
                   me={loc.position}
-                  meTooed={meTooed.includes(selected.id)}
+                  liked={liked.includes(selected.id)}
                   mine={mine.includes(selected.id)}
                   authorKey={authorKeys[selected.id]}
                   onClose={() => setSelectedId(null)}
                   onChanged={applyChange}
-                  onMeToo={(on) => (on ? addMeTooed(selected.id) : removeMeTooed(selected.id))}
+                  onLike={(on) => (on ? addLiked(selected.id) : removeLiked(selected.id))}
                   onListened={(e) => {
                     addHeard(e.id)
                     applyChange(e)
@@ -177,7 +177,7 @@ export default function App() {
           )}
           {tab === 'legends' && <LegendsPage echoes={echoes} heat={heat} onPick={pick} />}
           {tab === 'passport' && <PassportPage echoes={echoes} heard={heard} />}
-          {tab === 'me' && <MePage echoes={echoes} heard={heard} mine={mine} meTooed={meTooed} onPick={pick} />}
+          {tab === 'me' && <MePage echoes={echoes} heard={heard} mine={mine} liked={liked} onPick={pick} />}
         </div>
 
         <nav className="tabbar">
