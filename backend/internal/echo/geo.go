@@ -24,30 +24,37 @@ func (e Echo) WithinRange(lat, lng float64) (bool, float64) {
 }
 
 const (
-	// ScatterMinSepM: a new echo closer than this to an existing one gets nudged.
+	// ScatterMinSepM: a new echo closer than this to an existing one gets moved.
 	ScatterMinSepM = 8.0
-	// ScatterMinM / ScatterMaxM bound how far it is nudged.
-	ScatterMinM = 10.0
-	ScatterMaxM = 30.0
+	// Scatter rings: candidate radii around the original point. The outer ring
+	// stays well inside ListenRadiusM so a crowd of recordings from one spot
+	// remains audible from that spot.
+	scatterFirstRingM = 10.0
+	scatterRingStepM  = 8.0
+	scatterMaxRadiusM = 42.0
 )
 
-// Scatter nudges (lat, lng) a random 10-30 m away if another echo already sits
-// within ScatterMinSepM, so pins recorded from the same spot do not stack.
-// It retries a few times to avoid landing on yet another echo.
+// Scatter keeps (lat, lng) if nothing is within ScatterMinSepM; otherwise it
+// walks concentric rings outward from the original point and takes the first
+// free slot, starting each ring at a random angle so pins fan out evenly.
+// Distance from the original point never exceeds scatterMaxRadiusM.
 func Scatter(lat, lng float64, others []Echo, r *rand.Rand) (float64, float64) {
 	if !crowded(lat, lng, others) {
 		return lat, lng
 	}
-	for range 8 {
-		bearing := r.Float64() * 2 * math.Pi
-		dist := ScatterMinM + r.Float64()*(ScatterMaxM-ScatterMinM)
-		nlat, nlng := offset(lat, lng, dist, bearing)
-		if !crowded(nlat, nlng, others) {
-			return nlat, nlng
+	for radius := scatterFirstRingM; radius <= scatterMaxRadiusM; radius += scatterRingStepM {
+		slots := int(2 * math.Pi * radius / ScatterMinSepM)
+		start := r.Float64() * 2 * math.Pi
+		for i := range slots {
+			bearing := start + 2*math.Pi*float64(i)/float64(slots)
+			nlat, nlng := offset(lat, lng, radius, bearing)
+			if !crowded(nlat, nlng, others) {
+				return nlat, nlng
+			}
 		}
-		lat, lng = nlat, nlng
 	}
-	return lat, lng
+	// Every ring is full: random spot on the outer ring is the best we can do.
+	return offset(lat, lng, scatterMaxRadiusM, r.Float64()*2*math.Pi)
 }
 
 func crowded(lat, lng float64, others []Echo) bool {

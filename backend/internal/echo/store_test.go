@@ -111,16 +111,23 @@ func TestUnlike(t *testing.T) {
 func TestScatter(t *testing.T) {
 	r := rand.New(rand.NewPCG(1, 2))
 	base := Echo{Lat: 38.433115, Lng: -78.873205}
-	// nothing nearby: unchanged
-	la, ln := Scatter(base.Lat, base.Lng, nil, r)
-	if la != base.Lat || ln != base.Lng {
+	if la, ln := Scatter(base.Lat, base.Lng, nil, r); la != base.Lat || ln != base.Lng {
 		t.Fatal("should not move when alone")
 	}
-	// one echo already there: nudged 10-30 m away
-	la, ln = Scatter(base.Lat, base.Lng, []Echo{base}, r)
-	d := DistanceM(base.Lat, base.Lng, la, ln)
-	if d < ScatterMinM-0.5 || d > ScatterMaxM+0.5 {
-		t.Fatalf("moved %.1f m, want %v-%v", d, ScatterMinM, ScatterMaxM)
+	// 60 recordings from the exact same spot: all separated, all within the
+	// outer ring, so still inside the listen radius of the original point.
+	placed := []Echo{base}
+	for range 60 {
+		la, ln := Scatter(base.Lat, base.Lng, placed, r)
+		for _, o := range placed {
+			if d := DistanceM(la, ln, o.Lat, o.Lng); d < ScatterMinSepM-0.01 {
+				t.Fatalf("pin %.1f m from another, want >= %v", d, ScatterMinSepM)
+			}
+		}
+		if d := DistanceM(base.Lat, base.Lng, la, ln); d > scatterMaxRadiusM+0.01 {
+			t.Fatalf("pin %.1f m from origin, want <= %v", d, scatterMaxRadiusM)
+		}
+		placed = append(placed, Echo{Lat: la, Lng: ln})
 	}
 }
 
