@@ -237,6 +237,24 @@ textarea {
 .pin.selected {
   transform: scale(1.25);
 }
+/* "+N" on a group's centre pin: more echoes here than fit at this zoom. */
+.pin .more {
+  position: absolute;
+  top: -6px;
+  left: 60%;
+  background: var(--text);
+  color: var(--card);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 999px;
+  border: 1.5px solid var(--card);
+  white-space: nowrap;
+}
+.pin {
+  position: relative;
+}
 .me-dot {
   width: 100%;
   height: 100%;

@@ -58,18 +58,39 @@ function PinLayer({ echoes, selected, onSelect }: { echoes: Echo[]; selected: Ec
   const map = useMap()
   const [zoom, setZoom] = useState(map.getZoom())
   useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
-  const positions = useMemo(() => layoutPins(echoes, map, zoom), [echoes, map, zoom])
+  const { positions, hidden, overflow } = useMemo(() => layoutPins(echoes, map, zoom, selected?.id), [echoes, map, zoom, selected?.id])
   return (
     <>
-      {echoes.map((e) => (
-        <EchoPin key={e.id} echo={e} at={positions.get(e.id) ?? e} selected={selected?.id === e.id} onSelect={onSelect} />
-      ))}
+      {echoes
+        .filter((e) => !hidden.has(e.id))
+        .map((e) => (
+          <EchoPin
+            key={e.id}
+            echo={e}
+            at={positions.get(e.id) ?? e}
+            more={overflow.get(e.id) ?? 0}
+            selected={selected?.id === e.id}
+            onSelect={onSelect}
+          />
+        ))}
       <FocusOn target={selected ? (positions.get(selected.id) ?? selected) : null} />
     </>
   )
 }
 
-function EchoPin({ echo: e, at, selected, onSelect }: { echo: Echo; at: LatLng; selected: boolean; onSelect: (e: Echo) => void }) {
+function EchoPin({
+  echo: e,
+  at,
+  more,
+  selected,
+  onSelect,
+}: {
+  echo: Echo
+  at: LatLng
+  more: number
+  selected: boolean
+  onSelect: (e: Echo) => void
+}) {
   const icon = useMemo(() => {
     const cls = [
       'pin',
@@ -83,12 +104,13 @@ function EchoPin({ echo: e, at, selected, onSelect }: { echo: Echo; at: LatLng; 
     // SVG pin (Material "location_on" path) so it is perfectly symmetric.
     // The tip sits at y=22 of the 24-unit viewBox, so anchor there.
     const w = e.legend ? 40 : 32
+    const badge = more > 0 ? `<span class="more">+${more}</span>` : ''
     const html = `<div class="${cls}"><svg viewBox="0 0 24 24" width="${w}" height="${w}">
       <path class="body" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
       <circle class="hole" cx="12" cy="9" r="2.6"/>
-    </svg></div>`
+    </svg>${badge}</div>`
     return L.divIcon({ className: 'marker', html, iconSize: [w, w], iconAnchor: [w / 2, (w * 22) / 24] })
-  }, [e.legend, e.community, e.openDoor, e.flagged, selected])
+  }, [e.legend, e.community, e.openDoor, e.flagged, selected, more])
   return (
     <Marker
       position={at}
