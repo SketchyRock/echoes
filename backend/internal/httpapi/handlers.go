@@ -1,11 +1,13 @@
 package httpapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 
 	"echoes/backend/internal/echo"
 	"echoes/backend/internal/screen"
@@ -99,7 +101,7 @@ func (s *Server) echoAudio(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusNotFound, "no such echo")
 		return
 	}
-	serveAudio(w, b, mime)
+	serveAudio(w, r, b, mime)
 }
 
 func (s *Server) replyAudio(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +110,7 @@ func (s *Server) replyAudio(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusNotFound, "no such reply")
 		return
 	}
-	serveAudio(w, b, mime)
+	serveAudio(w, r, b, mime)
 }
 
 // listenEcho enforces the location lock: the caller must be within range.
@@ -236,9 +238,11 @@ func formOpenDoor(r *http.Request) *echo.OpenDoor {
 	return &echo.OpenDoor{Name: name, When: r.FormValue("doorWhen"), Where: r.FormValue("doorWhere")}
 }
 
-func serveAudio(w http.ResponseWriter, b []byte, mime string) {
+// serveAudio uses ServeContent so byte-range requests work. iOS Safari
+// probes with "Range: bytes=0-1" and refuses to play <audio> from servers
+// that answer with the whole file.
+func serveAudio(w http.ResponseWriter, r *http.Request, b []byte, mime string) {
 	w.Header().Set("Content-Type", mime)
-	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
-	w.Header().Set("Cache-Control", "no-store")
-	_, _ = w.Write(b)
+	w.Header().Set("Cache-Control", "private, max-age=3600")
+	http.ServeContent(w, r, "", time.Time{}, bytes.NewReader(b))
 }

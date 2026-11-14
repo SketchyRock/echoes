@@ -189,7 +189,7 @@ function ReplyForm({ echoId, onDone }: { echoId: string; onDone: (e: Echo | null
     if (!r.blob) return
     setBusy(true)
     const f = new FormData()
-    f.append('audio', r.blob, 'reply.webm')
+    f.append('audio', r.blob, r.blob.type === 'audio/wav' ? 'reply.wav' : 'reply.webm')
     f.append('transcript', r.transcript)
     if (door.name) {
       f.append('doorName', door.name)

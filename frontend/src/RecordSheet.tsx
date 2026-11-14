@@ -32,7 +32,7 @@ export function RecordSheet({ me, nearestPlace, onClose, onCreated }: Props) {
     if (!r.blob) return
     setBusy(true)
     const f = new FormData()
-    f.append('audio', r.blob, 'echo.webm')
+    f.append('audio', r.blob, r.blob.type === 'audio/wav' ? 'echo.wav' : 'echo.webm')
     f.append('lat', String(me.lat))
     f.append('lng', String(me.lng))
     f.append('place', place.trim() || nearestPlace)

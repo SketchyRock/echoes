@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { blobToWav } from './wav'
 
 // Browser speech recognition is not in lib.dom types for every browser.
 type SpeechRecognitionLike = {
@@ -57,9 +58,15 @@ export function useRecorder() {
       const mime = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4'
       const r = new MediaRecorder(stream, { mimeType: mime })
       r.ondataavailable = (e) => e.data.size && chunks.current.push(e.data)
-      r.onstop = () => {
-        setBlob(new Blob(chunks.current, { type: mime }))
+      r.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop())
+        const raw = new Blob(chunks.current, { type: mime })
+        // Normalise to WAV so every phone can play every recording.
+        try {
+          setBlob(await blobToWav(raw))
+        } catch {
+          setBlob(raw)
+        }
       }
       r.start()
       rec.current = r
