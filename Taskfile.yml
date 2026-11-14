@@ -1,0 +1,83 @@
+version: '3'
+
+vars:
+  BACKEND_PORT: '{{.BACKEND_PORT | default "8080"}}'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  setup:
+    desc: Install frontend deps
+    dir: frontend
+    cmds:
+      - npm install
+
+  dev:
+    desc: Run backend and frontend together (Ctrl-C stops both)
+    deps: [dev:backend, dev:frontend]
+
+  dev:backend:
+    desc: Run the Go API on :{{.BACKEND_PORT}}
+    dir: backend
+    env:
+      PORT: '{{.BACKEND_PORT}}'
+    cmds:
+      - go run ./cmd/server
+
+  dev:frontend:
+    desc: Run the Vite dev server (proxies /api to the backend)
+    dir: frontend
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Build backend binary and frontend bundle
+    deps: [build:backend, build:frontend]
+
+  build:backend:
+    dir: backend
+    cmds:
+      - go build -o ../bin/echoes-server ./cmd/server
+    sources:
+      - '**/*.go'
+      - go.mod
+    generates:
+      - ../bin/echoes-server
+
+  build:frontend:
+    dir: frontend
+    cmds:
+      - npm run build
+    sources:
+      - src/**/*
+      - index.html
+      - package.json
+    generates:
+      - dist/**/*
+
+  test:
+    desc: Run Go tests and frontend typecheck
+    deps: [test:backend, test:frontend]
+
+  test:backend:
+    dir: backend
+    cmds:
+      - go vet ./...
+      - go test ./...
+
+  test:frontend:
+    dir: frontend
+    cmds:
+      - npx tsc -b
+
+  fmt:
+    desc: gofmt the backend
+    dir: backend
+    cmds:
+      - gofmt -l -w .
+
+  clean:
+    cmds:
+      - rm -rf bin frontend/dist
