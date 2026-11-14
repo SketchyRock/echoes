@@ -4,8 +4,15 @@ import type { LatLng } from './useLocation'
 
 /** Minimum on-screen distance between any two pins, in CSS pixels. */
 export const PIN_SPACING_PX = 36
-/** A crowded group may spread at most this many rings; the rest are omitted. */
-export const MAX_RINGS = 2
+/**
+ * How many rings a crowded group may spread over at a given zoom. Zoomed out
+ * it squishes to a single pin with a +N badge; each zoom step in unfolds one
+ * more ring. By zoom 19 real coordinates are far enough apart that groups
+ * rarely form anyway.
+ */
+export function ringsForZoom(zoom: number): number {
+  return Math.max(0, Math.min(3, Math.round(zoom) - 16))
+}
 
 type Pt = { id: string; echo: Echo; orig: L.Point; pos: L.Point }
 
@@ -27,7 +34,7 @@ function priority(a: Echo, b: Echo, keep?: string): number {
 }
 
 /** How many pins fit in the centre plus MAX_RINGS rings. */
-export function groupCapacity(spacing = PIN_SPACING_PX, rings = MAX_RINGS): number {
+export function groupCapacity(rings: number, spacing = PIN_SPACING_PX): number {
   return ringSlots(Infinity, spacing, rings).length
 }
 
@@ -39,13 +46,14 @@ export function groupCapacity(spacing = PIN_SPACING_PX, rings = MAX_RINGS): numb
  * Pins far enough apart in reality are left exactly where they are.
  */
 export function layoutPins(echoes: Echo[], map: L.Map, zoom: number, keep?: string, spacing = PIN_SPACING_PX): PinLayout {
+  const rings = ringsForZoom(zoom)
   // Deterministic order so the layout does not jitter between renders.
   const sorted = [...echoes].sort((a, b) => (a.id < b.id ? -1 : 1))
   const pts: Pt[] = sorted.map((e) => {
     const p = map.project([e.lat, e.lng], zoom)
     return { id: e.id, echo: e, orig: p, pos: p }
   })
-  const capacity = groupCapacity(spacing)
+  const capacity = groupCapacity(rings, spacing)
   const hidden = new Set<string>()
   const overflow = new Map<string, number>()
 
@@ -83,7 +91,7 @@ export function layoutPins(echoes: Echo[], map: L.Map, zoom: number, keep?: stri
       // Too crowded for the allowed rings: keep the most relevant, omit the rest.
       const ranked = [...members].sort((a, b) => priority(pts[a].echo, pts[b].echo, keep))
       const shown = ranked.slice(0, capacity)
-      const slots = ringSlots(shown.length, spacing)
+      const slots = ringSlots(shown.length, spacing, rings)
       shown.forEach((i, k) => {
         pts[i].pos = L.point(cx + slots[k].x, cy + slots[k].y)
       })

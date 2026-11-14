@@ -70,7 +70,13 @@ function PinLayer({ echoes, selected, onSelect }: { echoes: Echo[]; selected: Ec
             at={positions.get(e.id) ?? e}
             more={overflow.get(e.id) ?? 0}
             selected={selected?.id === e.id}
-            onSelect={onSelect}
+            onSelect={(echo) => {
+              // A pin standing in for hidden neighbours unfolds on tap
+              // instead of opening, until the map is zoomed all the way in.
+              const more = overflow.get(echo.id) ?? 0
+              if (more > 0 && zoom < 19) map.flyTo(positions.get(echo.id) ?? echo, Math.min(19, zoom + 1), { duration: 0.4 })
+              else onSelect(echo)
+            }}
           />
         ))}
       <FocusOn target={selected ? (positions.get(selected.id) ?? selected) : null} />
@@ -98,12 +104,14 @@ function EchoPin({
       (e.community || e.openDoor) && !e.legend && 'community',
       e.flagged && 'flagged',
       selected && 'selected',
+      more > 0 && 'cluster',
     ]
       .filter(Boolean)
       .join(' ')
     // SVG pin (Material "location_on" path) so it is perfectly symmetric.
     // The tip sits at y=22 of the 24-unit viewBox, so anchor there.
-    const w = e.legend ? 40 : 32
+    // A pin standing in for hidden neighbours is drawn a little larger.
+    const w = e.legend || more > 0 ? 40 : 32
     const badge = more > 0 ? `<span class="more">+${more}</span>` : ''
     const html = `<div class="${cls}"><svg viewBox="0 0 24 24" width="${w}" height="${w}">
       <path class="body" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
