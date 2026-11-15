@@ -74,7 +74,7 @@ The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pi
 
 ## What we learned
 
-Most of our time went into the idea, and the app and the presentation were the rest. Next time we would spend more of the time on the demo and the pitch and less on the backend, because a simple demo that works proves the idea better than complex infrastructure that can just be explained. We would also put the full idea first in the pitch and leave the business details for questions. The longer version is in the [write-up](https://github.com/SketchyRock/competitions/blob/main/2026/echoes-makeathon.md).
+Most of our time went into the idea, and the app and the presentation were the rest. Next time we would spend more of the time on the demo and the pitch and less on the backend, because a simple demo that works proves the idea better than complex infrastructure that can just be explained. We would also put the full idea first in the pitch and leave the business details for questions. The longer version is in the write-up in my [competitions repo](https://github.com/SketchyRock/competitions).
 
 ## Team
 
