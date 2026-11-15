@@ -69,7 +69,7 @@ Built at the JMU Makeathon, fall 2026.
 
 | | |
 |---|---|
-| [Enzo Hins](https://github.com/SketchyRock) | Idea and outline, research, pitch and deck |
+| [Enzo Hins](https://github.com/SketchyRock) | Idea outline, market research, pitch prep |
 | [Luke](https://github.com/lukem570) | Built the demo: Go API, React client, map pin layout, deployment |
 | [David Hilscher](https://github.com/davidhilscher) | Team member |
 | [xxfishshadowxx](https://github.com/xxfishshadowxx) | Team member |
