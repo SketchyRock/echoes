@@ -1,89 +1,79 @@
 # Echoes
 
-Echoes is a haunted campus made of anonymous voice notes. Students leave short recordings pinned to real places on campus and around town, and you can only hear one by standing at the spot. Popular echoes become campus folklore, and some point to real clubs and events, so the app works as a way into communities that already exist.
+**Hear JMU by standing where it was said.**
 
-Built for the JMU makeathon. Theme: break out of your comfort zone.
+Echoes is a haunted campus made of anonymous voice notes. Students leave short recordings pinned to real places on campus and around Harrisonburg, and you can only hear one by standing at the spot. Popular echoes become campus folklore, and some point to real clubs and events, so the app works as a way into communities that already exist.
 
-The full outline of the idea is in [IDEA.md](IDEA.md).
+We built it at the JMU Makeathon in fall 2026 and placed **third**. The prompt was "break out of your comfort zone." We showed a working phone demo, and everyone in the room could open it and use it at the same time.
 
-## Demo app
+<p align="center">
+  <img src="docs/screenshots/map.png" width="22%" alt="Satellite map of JMU with echo pins near Hartman Hall">
+  <img src="docs/screenshots/record.png" width="22%" alt="Recording a new echo at your current location">
+  <img src="docs/screenshots/legends.png" width="22%" alt="Legends leaderboard and hot places">
+  <img src="docs/screenshots/passport.png" width="22%" alt="Passport of campus places">
+</p>
+<p align="center"><sub>The demo: map, record an echo, Legends, Passport. Legends shown here are seeded example echoes.</sub></p>
 
-Mobile-first web app. On a phone it fills the screen; on a desktop it renders inside an iPhone-shaped frame. Everything lives in memory, nothing is persisted. Audio is stored as byte arrays in the Go process.
+## The idea
 
-```
-backend/   Go, stdlib only. In-memory store, a few far-away example echoes, guardrail screening.
-frontend/  Vite + React + TypeScript. Leaflet with Esri World Imagery satellite tiles, no API key.
-```
+Students stay in their dorms and miss what is happening around them. Clubs and events have a social barrier to entry. We did not want to promise anyone a best friend. Nobody can break someone else's comfort zone for them, so the app's job is to make the first step smaller and point somewhere real.
 
-### Run
+Our line in the pitch was **"You help us help you."** The student takes the step; Echoes makes it easier and shows where to take it.
 
-Needs Go 1.22+, Node 20+, and [Task](https://taskfile.dev) (`brew install go-task`).
+It works in four small steps, each a little outside what a student would normally do:
 
-```sh
-task setup   # npm install
-task dev     # backend :8080 + frontend :5173
-task test    # go vet + go test + tsc
-task build   # bin/echoes-server with the frontend embedded
-```
+1. **Go.** You visit places you would never stop at, because that is where the voice is.
+2. **Hear.** You listen to people outside your circle and outside your major.
+3. **Say.** You leave an echo yourself, anonymously, which is the lowest-risk way to speak up.
+4. **Receive.** You get a reply, or hear an echo, that points to something real and nearby.
 
-Or by hand: `cd backend && go run ./cmd/server` and `cd frontend && npm run dev` (Vite proxies `/api` to :8080).
+How it works:
 
-Open http://localhost:5173. For a real phone on the same Wi-Fi use the network URL Vite prints, and switch the location chip to GPS.
+- **Location-locked.** You can only hear or record an echo by being at its spot. Far-away echoes show as locked on purpose.
+- **Legends.** Echoes that enough people relate to (25 likes in the demo) become Legends, with an auto-generated title like "The Carrier Stairwell Confession". Ranking rewards "me too" and not mockery.
+- **Open doors.** An echo can carry an optional invitation to a real club or event. The voice stays anonymous, and the invitation points at something real.
+- **Safety.** Voice only, transcripts screened before posting, no naming individuals, crisis-adjacent content kept out of Legends and given a support card.
+- **Everything is opt-in.** No streak penalties, no guilt notifications, nothing arranged for you.
 
-### Single binary
+The full outline, including the research behind it and where we say plainly that the core mechanic already exists in other apps, is in [IDEA.md](IDEA.md).
 
-`task build` runs Vite into `backend/internal/web/dist`, which `backend/internal/web` embeds, so `bin/echoes-server` serves both the API (`/api/...`) and the app. `task serve` runs it on :8080.
+## Why JMU would want it
 
-### Deploy (Docker Compose + nginx + Let's Encrypt)
+From our pitch, using JMU's published numbers: about 4,900 first-years arrive each year, and 91.3% come back, against a goal of 94%. Getting students to show up to clubs and events is the goal, and Echoes is a way in. For money we kept it small: clubs, club leaders and student government could pay a small fee to promote a voice note, and campuses could fund it too.
 
-Live at https://quikcad.net.
+## How it grows
 
-```sh
-task deploy                      # = deploy/deploy.sh docean quikcad.net
-```
+1. **Start small.** Just JMU at first, through OPAs, FROGs, RAs and club leaders.
+2. **Grow local.** Out into the wider Harrisonburg community, so more of campus life is on the map.
+3. **Add campuses.** Move campus to campus. A much bigger project, and more money.
 
-`deploy/deploy.sh` builds the frontend and cross-compiles a static linux/amd64 binary locally (the droplet is too small to build the frontend), copies it with `docker-compose.yml`, `deploy/Dockerfile.runtime` and the nginx template to `/opt/echoes`, then runs `deploy/remote.sh` on the host: builds a distroless runtime image, starts `app` + `nginx`, bootstraps a self-signed cert if needed so nginx can answer the ACME challenge, obtains the real cert for the domain (and `www.` when it resolves there), reloads nginx and starts the certbot renewer. Only the `echoes` compose project is touched. Re-running is idempotent.
+## What we built
 
-### Backend layout
+The demo is a mobile-first web app: a Go backend with an in-memory store, and a Vite + React + TypeScript frontend with a satellite map. Posting runs the transcript through simple guardrails (naming a person blocks the echo, crisis words add a support card). The map opens at Hartman Hall, where the demo ran. Technical notes, the API and how to run it are in [docs/DEMO.md](docs/DEMO.md).
 
-```
-backend/
-  cmd/server/          entrypoint
-  internal/echo/       model, in-memory store, geo, placeholder WAV generator
-  internal/screen/     transcript guardrails
-  internal/seed/       far-away example echoes (show the locked state)
-  internal/httpapi/    HTTP handlers and routing
-  internal/web/        embedded frontend build (dist/ is gitignored)
-```
+What is real and what is not: the map, location lock, recording, likes, Legends, Passport, replies and the screening rules work in the demo. The example echoes are seeded, nothing is persisted, and there is no sign-in. Decay, seasons and multi-campus onboarding are described in the idea outline but not built.
 
-### Demo flow
+## Pitch
 
-- Your position comes from GPS when the browser allows it; otherwise it is locked to **Hartman Hall** (where the demo runs). There is no manual way to move.
-- Hit **Echo** to record one where you stand. Echoes you recorded play from anywhere (the create response hands the client an `authorKey`).
-- The example pins are all several hundred meters away, so tapping them shows the locked state. Other people's echoes only play within 75 m.
-- Listen, tap **likes**, leave a warm reply (voice, optional open door).
-- The **Echo** tab records a new echo at your position. Transcript comes from browser speech recognition (Chrome/Safari) or you type it. It is screened live: naming a person blocks, crisis words add a support card and keep it out of Legends.
-- 25 likes turn an echo into a Legend with an auto-generated title.
-- **Legends** tab: leaderboard, rising echoes, heat by place. **Me** tab: passport of places heard, your own echo stats (counts only, never who).
+We had a short slot with most of it left for questions. The deck is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pitch-deck.pdf).
 
-### API
+<p align="center">
+  <img src="docs/pitch/01-title.png" width="32%" alt="Title slide">
+  <img src="docs/pitch/02-what-we-did.png" width="32%" alt="The problem, our approach and the hook">
+  <img src="docs/pitch/03-why-jmu.png" width="32%" alt="Why JMU wants students involved">
+</p>
 
-| Method | Path | Notes |
-|---|---|---|
-| GET | `/api/echoes[?lat&lng][&limit=n]` | up to 40 echoes. With a position: all Legends, then nearest first. Without: Legends, then by likes |
-| POST | `/api/echoes` | multipart: `audio`, `lat`, `lng`, `transcript`, `place`, `tone`, `duration`, `doorName/When/Where`. A pin within 8 m of an existing one is scattered 10–30 m so pins don't stack |
-| GET | `/api/echoes/{id}` | |
-| DELETE | `/api/echoes/{id}` | author retires echo |
-| GET | `/api/echoes/{id}/audio` | raw bytes |
-| POST | `/api/echoes/{id}/listen?lat&lng[&key]` | 403 if farther than 75 m, unless `key` is the echo's `authorKey` |
-| POST | `/api/echoes/{id}/like` | mints Legend at 25 |
-| DELETE | `/api/echoes/{id}/like` | take a like back |
-| POST | `/api/echoes/{id}/replies` | multipart like create |
-| GET | `/api/echoes/{id}/replies/{rid}/audio` | |
-| GET | `/api/heat` | activity per place |
-| POST | `/api/screen` | `{transcript}` → `{blocked, reason, flagged, resource}` |
+## Team
 
-## Planned
+Built at the JMU Makeathon, fall 2026.
 
-- Website
-- Short slide deck for the pitch
+| | |
+|---|---|
+| [Enzo Hins](https://github.com/SketchyRock) | Idea and outline, research, pitch and deck |
+| [Luke](https://github.com/lukem570) | Built the demo: Go API, React client, map pin layout, deployment |
+| [David Hilscher](https://github.com/davidhilscher) | Team member |
+| [xxfishshadowxx](https://github.com/xxfishshadowxx) | Team member |
+
+## Status
+
+A hackathon project, not a product. One thing to know before reusing the name: "Echoes" is already used by at least two other voice-pin apps, so a real launch would need a new one.
