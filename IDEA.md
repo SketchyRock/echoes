@@ -1,6 +1,6 @@
 # Echoes: full idea outline
 
-Working document for the JMU makeathon. Everything we agreed on lives here. The pitch deck, the website and the local demo should all pull from this file.
+This is the team's working outline for the JMU Makeathon (November 13 to 14, 2026), where we placed third. It is a planning document, so it includes judge prep and ideas we did not build. The pitch deck and the demo were made from it.
 
 ## Prompt
 

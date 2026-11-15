@@ -21,11 +21,11 @@
   <img src="docs/screenshots/legends.png" width="22%" alt="Legends leaderboard and hot places">
   <img src="docs/screenshots/passport.png" width="22%" alt="Passport of campus places">
 </p>
-<p align="center"><sub>Map, record, Legends, Passport. The Legends shown are seeded example echoes.</sub></p>
+<p align="center"><sub>Map, record, Legends, Passport. The top two Legends and their like counts are seeded examples; the third was recorded in the demo.</sub></p>
 
 ## What it is
 
-Echoes is a haunted campus made of anonymous voice notes. Students leave short recordings pinned to real places on campus and around Harrisonburg. To hear one, you have to stand at the spot. Popular echoes become campus folklore, and some point to real clubs and events, so the app is a way into communities that already exist.
+Echoes lets students leave short anonymous voice notes pinned to real places on campus and around Harrisonburg. To hear one, you have to stand at the spot. We described it as a haunted campus made of voices. Popular echoes become campus folklore, and some point to real clubs and events, so the app is a way into communities that already exist.
 
 The prompt was "break out of your comfort zone." Nobody can do that for you, so we did not promise friendships. We tried to make the first step smaller and show where to take it. Our line was **"You help us help you."** The student takes the step; Echoes makes it easier.
 
@@ -39,23 +39,24 @@ The prompt was "break out of your comfort zone." Nobody can do that for you, so 
 - **Location-locked.** You can only hear or record an echo within 75 meters of its pin. Far-away echoes show as locked on purpose.
 - **Legends.** Echoes that enough people relate to (25 likes in the demo) become Legends with a generated title, like "The Carrier Stairwell Confession".
 - **Open doors.** An echo can carry an optional invitation to a real club or event. The voice stays anonymous.
-- **Guardrails.** Voice only. The transcript is screened before posting: naming a person blocks the echo, and crisis words add a support card and keep the echo out of Legends.
+- **Guardrails.** Voice only. The transcript goes through simple keyword and pattern screening before posting: naming a professor or other titled person ("Professor Smith") blocks the echo, and crisis words add a support card and keep the echo out of Legends. Real moderation was not built.
 - **Opt-in.** No streak penalties, no guilt notifications, nothing arranged for you.
 
 The full outline, including the research behind it and where we say plainly that geo-locked audio already exists in other apps, is in [IDEA.md](IDEA.md).
 
 ## Why a school would want it
 
-JMU takes in about 4,900 first-years a year and keeps 91.3% of them, against a goal of 94% (figures from our pitch, sourced to JMU data). Getting students to show up to clubs and events is the goal, and Echoes is a way in. We kept the money side small: clubs and student government could pay a little to promote a voice note, and a campus could fund it. It could grow from JMU to the wider Harrisonburg community, then to other campuses.
+JMU takes in about 4,900 first-years a year and keeps 91.3% of them, against a goal of 94% (figures from our pitch, sourced to JMU data). Getting students to show up to clubs and events is the goal, and our hypothesis is that Echoes is a way in; we have not tested that. We kept the money side small: clubs and student government could pay a little to promote a voice note, and a campus could fund it. It could grow from JMU to the wider Harrisonburg community, then to other campuses.
 
 ## The demo
 
 We built a working phone demo for the pitch, and everyone in the room opened it at the same time. It is a mobile-first web app: a Go backend with an in-memory store and a Vite + React + TypeScript frontend with a Leaflet satellite map.
 
-Working in the demo: the map, location lock, recording, likes, Legends, Passport, replies and the screening rules. Not built: sign-in, persistence (everything is in memory), decay and seasons. The example echoes are seeded.
+Working in the demo: the map, location lock, recording, likes, Legends, Passport, replies and the screening rules. Not built: sign-in, persistence (everything is in memory), decay and seasons. The example echoes are seeded, and the open door in them (a climbing club meeting) is made up.
 
 ```sh
-brew install go-task   # needs Go 1.22+ and Node 20+
+# needs Go 1.26+, Node 20.19+ or 22.12+, and Task (https://taskfile.dev)
+brew install go-task   # or any other install method from taskfile.dev
 task setup && task dev # backend :8080, frontend :5173
 ```
 
@@ -63,7 +64,7 @@ Open http://localhost:5173. The map starts at Hartman Hall unless the browser sh
 
 ## Pitch
 
-The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pitch-deck.pdf).
+The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pitch-deck.pdf). It describes the full concept, including echoes fading after 24 hours and moderated voice notes, which the demo does not implement.
 
 <p align="center">
   <img src="docs/pitch/01-title.png" width="32%" alt="Title slide">
@@ -73,7 +74,7 @@ The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pi
 
 ## What we learned
 
-The idea was about 90% of the work, and the app and the presentation were the rest. Next time we would spend more of the time on the demo and the pitch and less on the backend, because a simple demo that works proves the idea better than complex infrastructure that can just be explained. We would also put the full idea first in the pitch and leave the business details for questions. The longer version is in the [write-up](https://github.com/SketchyRock/competitions/blob/main/2026/echoes-makeathon.md).
+Most of our time went into the idea, and the app and the presentation were the rest. Next time we would spend more of the time on the demo and the pitch and less on the backend, because a simple demo that works proves the idea better than complex infrastructure that can just be explained. We would also put the full idea first in the pitch and leave the business details for questions. The longer version is in the [write-up](https://github.com/SketchyRock/competitions/blob/main/2026/echoes-makeathon.md).
 
 ## Team
 
