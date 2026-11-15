@@ -50,7 +50,7 @@ JMU takes in about 4,900 first-years a year and keeps 91.3% of them, against a g
 
 ## The demo
 
-We built a working phone demo for the pitch, and everyone in the room opened it at the same time. It is a mobile-first web app: a Go backend with an in-memory store and a Vite + React + TypeScript frontend with a Leaflet satellite map.
+We built a working phone demo for the pitch, and everyone in the room opened it on their phones at the same time. It was hosted only for the event, so to try it, run it locally. It is a mobile-first web app: a Go backend with an in-memory store and a Vite + React + TypeScript frontend with a Leaflet satellite map.
 
 Working in the demo: the map, location lock, recording, likes, Legends, Passport, replies and the screening rules. Not built: sign-in, persistence (everything is in memory), decay and seasons. The example echoes are seeded, and the open door in them (a climbing club meeting) is made up.
 
@@ -64,7 +64,7 @@ Open http://localhost:5173. The map starts at Hartman Hall unless the browser sh
 
 ## Pitch
 
-The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pitch-deck.pdf). It describes the full concept, including echoes fading after 24 hours and moderated voice notes, which the demo does not implement.
+The deck we presented is [docs/pitch/echoes-pitch-deck.pdf](docs/pitch/echoes-pitch-deck.pdf). It is the deck as presented minus the slide with the temporary demo URL. It describes the full concept, including echoes fading after 24 hours and moderated voice notes, which the demo does not implement.
 
 <p align="center">
   <img src="docs/pitch/01-title.png" width="32%" alt="Title slide">

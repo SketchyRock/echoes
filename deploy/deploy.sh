@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Deploys Echoes to a Docker host over SSH.
 #
-#   deploy/deploy.sh <ssh-host> <domain>        e.g. deploy/deploy.sh docean quikcad.net
+#   deploy/deploy.sh <ssh-host> <domain>        e.g. deploy/deploy.sh my-droplet example.com
 #
 # The frontend is built and the Go binary cross-compiled here (the droplet
 # has too little RAM to build the frontend). The binary, compose file and

@@ -30,10 +30,10 @@ Open http://localhost:5173. For a real phone on the same Wi-Fi use the network U
 
 ### Deploy (Docker Compose + nginx + Let's Encrypt)
 
-The hackathon demo ran on a small Docker host behind nginx and Let's Encrypt.
+The hackathon demo ran on a small Docker host behind nginx and Let's Encrypt, only for the length of the event so everyone could use the same instance. It is no longer hosted, so run it locally to try it.
 
 ```sh
-task deploy                      # = deploy/deploy.sh docean quikcad.net
+task deploy HOST=<ssh-host> DOMAIN=<domain>   # = deploy/deploy.sh <ssh-host> <domain>
 ```
 
 `deploy/deploy.sh` builds the frontend and cross-compiles a static linux/amd64 binary locally (the droplet is too small to build the frontend), copies it with `docker-compose.yml`, `deploy/Dockerfile.runtime` and the nginx template to `/opt/echoes`, then runs `deploy/remote.sh` on the host: builds a distroless runtime image, starts `app` + `nginx`, bootstraps a self-signed cert if needed so nginx can answer the ACME challenge, obtains the real cert for the domain (and `www.` when it resolves there), reloads nginx and starts the certbot renewer. Only the `echoes` compose project is touched. Re-running is idempotent.
