@@ -61,9 +61,9 @@ tasks:
       - go build -trimpath -ldflags="-s -w" -o ../bin/echoes-linux-amd64 ./cmd/server
 
   deploy:
-    desc: "Deploy to the droplet: task deploy HOST=docean DOMAIN=quikcad.net"
+    desc: "Deploy over SSH: task deploy HOST=<ssh-host> DOMAIN=<domain>"
     cmds:
-      - deploy/deploy.sh {{.HOST | default "docean"}} {{.DOMAIN | default "quikcad.net"}}
+      - deploy/deploy.sh {{.HOST}} {{.DOMAIN}}
 
   serve:
     desc: Run the single binary locally (API + embedded frontend on :8080)
