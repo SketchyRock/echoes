@@ -4,7 +4,7 @@
 
 Echoes is a haunted campus made of anonymous voice notes. Students leave short recordings pinned to real places on campus and around Harrisonburg, and you can only hear one by standing at the spot. Popular echoes become campus folklore, and some point to real clubs and events, so the app works as a way into communities that already exist.
 
-We built it at the JMU Makeathon in fall 2026 and placed **third**. The prompt was "break out of your comfort zone." We showed a working phone demo, and everyone in the room could open it and use it at the same time.
+We built it in 24 hours at the JMU Makeathon (November 13 to 14, 2026) and placed **third**. The prompt was "break out of your comfort zone." We showed a working phone demo, and everyone in the room could open it and use it at the same time.
 
 <p align="center">
   <img src="docs/screenshots/map.png" width="22%" alt="Satellite map of JMU with echo pins near Hartman Hall">
@@ -65,15 +65,15 @@ We had a short slot with most of it left for questions. The deck is [docs/pitch/
 
 ## Team
 
-Built at the JMU Makeathon, fall 2026.
+Built in 24 hours at the JMU Makeathon, November 13 to 14, 2026.
 
 | | |
 |---|---|
-| [Enzo Hins](https://github.com/SketchyRock) | Idea outline, market research, pitch prep |
-| [Luke](https://github.com/lukem570) | Built the demo: Go API, React client, map pin layout, deployment |
-| [David Hilscher](https://github.com/davidhilscher) | Team member |
-| [xxfishshadowxx](https://github.com/xxfishshadowxx) | Team member |
+| [Enzo Hins](https://github.com/SketchyRock) | Came up with the idea. Wrote the outline, ran research and pitch prep, helped with the presentation and with deciding what to build |
+| [David Hilscher](https://github.com/davidhilscher) | Presentation and coordination across the whole project, plus planning what needed to be built |
+| [Luke Bonnell](https://github.com/lukem570) | Built the demo: Go API, React client, map pin layout, deployment |
+| [Curtis Linweaver](https://github.com/xxfishshadowxx) | Helped shape the idea and the presentation |
 
-## Status
+## License
 
-A hackathon project, not a product. One thing to know before reusing the name: "Echoes" is already used by at least two other voice-pin apps, so a real launch would need a new one.
+MIT, see [LICENSE](LICENSE). Use it however you like.
